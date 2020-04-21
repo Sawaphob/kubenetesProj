@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  labels:
+    app: rps
+spec:
+  ports:
+    - port: 5001
+      protocol: TCP
+      targetPort: 5001
+  selector:
+    app: rps
+    tier: user
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  labels:
+    app: rps
+spec:
+  replicas: 2
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: rps
+      tier: user
+  template:
+    metadata:
+      labels:
+        app: rps
+        tier: user
+    spec:
+      containers:
+        - image: puunsn/user:latest
+          name: user-service
+          ports:
+            - containerPort: 5001
+      tolerations:
+      - key: "node.kubernetes.io/not-ready"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 10
+      - key: "node.kubernetes.io/unreachable"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 10
+

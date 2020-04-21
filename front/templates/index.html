@@ -1,0 +1,35 @@
+<!doctype html>
+<title>Rock Paper Scissor</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<div>
+    <p>choose an action:</p>
+    <button type="button">Rock</button>
+    <button type="button">Paper</button>
+    <button type="button">Scissor</button>
+</div>
+<div>
+    <p id="bot">competitor: </p>
+    <p id="result">result: </p>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('button').click(function(){
+            $('#bot').text('competitor: ');
+            $('#result').text('result: ');
+
+            $.ajax({
+                type: "GET",
+                url: "/submit",
+                success: function(result){
+                    $('#bot').text('competitor: ' + result.bot);
+                    $('#result').text('result: ' + result.result);
+                },
+                data: {
+                    action: $(this).text()
+                },
+                contentType: "application/json",
+            });
+        });
+    });
+</script>
